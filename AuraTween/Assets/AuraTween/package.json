@@ -1,0 +1,14 @@
+{
+    "name": "dev.auros.auratween",
+    "displayName": "AuraTween",
+    "author": {
+        "name": "Auros Nexus",
+        "url": "https://auros.dev"
+    },
+    "version": "0.0.1",
+    "unity": "2021.3",
+    "description": "A lightweight, simple, and high performance tweening library for Unity.",
+    "keywords": [ "tween", "tweening", "AuraTween" ],
+    "license": "MIT",
+    "dependencies": {}
+}
