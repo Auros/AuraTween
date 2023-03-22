@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using AuraTween.Internal;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace AuraTween
 {
@@ -13,14 +14,14 @@ namespace AuraTween
         private readonly List<TweenContext> _activeContexts = new();
         private readonly Dictionary<long, TweenContext> _activeContextLookup = new();
 
+        private readonly ObjectPool<TweenContext> _contextPool = new(() => new TweenContext(), ClearContext, ClearContext, ClearContext);
+
         public Tween Run(TweenOptions options)
         {
             var handle = new Tween();
-            var ctx = new TweenContext
-            {
-                Id = handle.Id,
-                Options = options
-            };
+            var ctx = _contextPool.Get();
+            ctx.Options = options;
+            ctx.Id = handle.Id;
             AddContext(ctx);
             return handle;
         }
@@ -93,6 +94,7 @@ namespace AuraTween
                     // Tween was completed. Remove from active, invoke necessary events, and cleanup.
                     _activeContextLookup.Remove(ctx.Id);
                     _activeContexts.Remove(ctx);
+                    _contextPool.Release(ctx);
                     options.Updater(1f); // Force the updater to be "1" to re-evaluate its value in case we go over.
                     //options.OnComplete?.Invoke();
                     continue;
@@ -102,6 +104,7 @@ namespace AuraTween
                 {
                     _activeContextLookup.Remove(ctx.Id);
                     _activeContexts.Remove(ctx);
+                    _contextPool.Release(ctx);
                     //options.OnCanceled?.Invoke();
                     continue;
                 }
@@ -110,6 +113,15 @@ namespace AuraTween
                 var progress = ctx.Progress / options.Duration;
                 options.Updater(easer(0f, 1f, progress));
             }
+        }
+
+        private static void ClearContext(TweenContext ctx)
+        {
+            ctx.Id = -1;
+            ctx.Progress = 0;
+            ctx.WantsToCancel = false;
+            ctx.Paused = false;
+            ctx.Options = default;
         }
     }
 }
