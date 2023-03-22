@@ -4,8 +4,8 @@ namespace AuraTween
 {
     public struct TweenOptions
     {
-        public Ease Ease;
         public float Duration;
         public Action<float> Updater;
+        public Func<float, float, float, float> Interpolator;
     }
 }

@@ -106,8 +106,9 @@ namespace AuraTween
                     continue;
                 }
 
+                var easer = ctx.Options.Interpolator;
                 var progress = ctx.Progress / options.Duration;
-                options.Updater(Easer.Ease(0f, 1f, progress, options.Ease));
+                options.Updater(easer(0f, 1f, progress));
             }
         }
     }
