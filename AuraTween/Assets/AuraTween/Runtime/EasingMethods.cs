@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -265,14 +266,14 @@ namespace AuraTween
         {
             end -= start;
 
-            const float p = .3f;
-            float a = 0;
+            const float d = 1f;
+            const float p = d * .3f;
             float s;
+            float a = 0;
 
             if (time == 0) return start;
 
-            if (Mathf.Approximately((time * 0.5f), 2))
-                return start + end;
+            if (Math.Abs((time /= d * 0.5f) - 2) < .001f) return start + end;
 
             if (a == 0f || a < Mathf.Abs(end))
             {
@@ -284,8 +285,8 @@ namespace AuraTween
                 s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
             }
 
-            if (time < 1) return -0.5f * (a * Mathf.Pow(2, 10 * (time -= 1)) * Mathf.Sin((time - s) * (2 * Mathf.PI) / p)) + start;
-            return a * Mathf.Pow(2, -10 * (time -= 1)) * Mathf.Sin((time - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
+            if (time < 1) return -0.5f * (a * Mathf.Pow(2, 10 * (time -= 1)) * Mathf.Sin((time * d - s) * (2 * Mathf.PI) / p)) + start;
+            return a * Mathf.Pow(2, -10 * (time -= 1)) * Mathf.Sin((time * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
         }
         
         #endregion
