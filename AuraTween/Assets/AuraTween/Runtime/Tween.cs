@@ -64,5 +64,18 @@ namespace AuraTween
             if (!_tweenManager.IsTweenActive(this))
                 throw new MissingTweenException(this);
         }
+
+#if AURATWEEN_UNITASK_SUPPORT
+        public Cysharp.Threading.Tasks.UniTask.Awaiter GetAwaiter()
+        {
+            return CompletionTask().GetAwaiter();
+        }
+
+        private async Cysharp.Threading.Tasks.UniTask CompletionTask()
+        {
+            while (IsAlive)
+                await Cysharp.Threading.Tasks.UniTask.Yield();
+        }
+#endif
     }
 }

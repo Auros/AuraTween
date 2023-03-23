@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace AuraTween
@@ -9,34 +9,14 @@ namespace AuraTween
         [SerializeField]
         private TweenManager _tweenManager;
 
-        private IEnumerator Start()
+        private async UniTaskVoid Start()
         {
-            yield return new WaitForSeconds(1);
             var mat = transform.GetComponent<Renderer>().material;
             
-            /*_tweenManager.Run(
-                Vector3.zero, 
-                Vector3.one * 5, 
-                5f, 
-                v => transform.localPosition = v,
-                Easer.InOutCubic);*/
-
-            var tween = _tweenManager.Run(
-                Color.red, 
-                Color.cyan, 
-                5f, 
-                v => mat.color = v,
-                Ease.InOutCubic.ToInterpolator(),
-                HSV,
-                this);
+            await _tweenManager.Run(Color.red, Color.cyan, 5f, v => mat.color = v,
+                Ease.InOutCubic.ToInterpolator(), HSV, this);
             
-            tween.SetOnCancel(() => print("canceled"));
-            tween.SetOnComplete(() => print("finished"));
-            
-            yield return new WaitForSeconds(2f);
-            tween.Restart();
-            yield return new WaitForSeconds(1f);
-            Destroy(this);
+            print("tween ended");
         }
 
         private static Action<float> HSV(Color start, Color end, Action<Color> updater)
