@@ -47,6 +47,9 @@ namespace AuraTween
         {
             if (!_tweenManager)
                 throw new MissingTweenManagerException(this);
+
+            if (!_tweenManager.IsTweenActive(this))
+                throw new MissingTweenException(this);
         }
     }
 }
