@@ -5,6 +5,8 @@ namespace AuraTween
     public struct TweenOptions
     {
         public float Duration;
+        public Action? OnCancel;
+        public Action? OnComplete;
         public Action<float> Updater;
         public Func<float, float> Interpolator;
     }

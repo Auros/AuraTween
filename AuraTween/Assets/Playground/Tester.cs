@@ -21,13 +21,19 @@ namespace AuraTween
                 v => transform.localPosition = v,
                 Easer.InOutCubic);*/
 
-            _tweenManager.Run(
+            var tween = _tweenManager.Run(
                 Color.red, 
                 Color.cyan, 
                 5f, 
                 v => mat.color = v,
-                Ease.OutBounce.ToInterpolator(),
+                Ease.InOutCubic.ToInterpolator(),
                 HSV);
+            
+            tween.SetOnCancel(() => print("canceled"));
+            tween.SetOnComplete(() => print("finished"));
+            
+            yield return new WaitForSeconds(2f);
+            tween.Cancel();
         }
 
         private static Action<float> HSV(Color start, Color end, Action<Color> updater)

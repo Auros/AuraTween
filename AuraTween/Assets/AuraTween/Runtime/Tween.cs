@@ -1,4 +1,5 @@
-﻿using AuraTween.Exceptions;
+﻿using System;
+using AuraTween.Exceptions;
 
 namespace AuraTween
 {
@@ -37,10 +38,22 @@ namespace AuraTween
             _tweenManager.ResetTween(this);
         }
 
-        public void Stop()
+        public void Cancel()
         {
             ThrowIfInvalid();
             _tweenManager.CancelTween(this);
+        }
+
+        public void SetOnCancel(Action cancel)
+        {
+            ThrowIfInvalid();
+            _tweenManager.SetOnCancel(this, cancel);
+        }
+
+        public void SetOnComplete(Action complete)
+        {
+            ThrowIfInvalid();
+            _tweenManager.SetOnComplete(this, complete);
         }
 
         private void ThrowIfInvalid()

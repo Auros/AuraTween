@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AuraTween.Internal;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace AuraTween
 
         public Tween Run(TweenOptions options)
         {
-            var handle = new Tween();
+            var handle = new Tween(this);
             var ctx = _contextPool.Get();
             ctx.Options = options;
             ctx.Id = handle.Id;
@@ -31,28 +32,19 @@ namespace AuraTween
         internal void PlayTween(Tween tween)
         {
             var ctx = GetContext(tween);
-            if (ctx is null)
-                return;
-
-            ctx.Paused = false;
+            ctx!.Paused = false;
         }
         
         internal void PauseTween(Tween tween)
         {
             var ctx = GetContext(tween);
-            if (ctx is null)
-                return;
-
-            ctx.Paused = true;
+            ctx!.Paused = true;
         }
         
         internal void ResetTween(Tween tween)
         {
             var ctx = GetContext(tween);
-            if (ctx is null)
-                return;
-
-            ctx.Progress = 0f;
+            ctx!.Progress = 0f;
         }
         
         internal void CancelTween(Tween tween)
@@ -64,8 +56,23 @@ namespace AuraTween
             ctx.WantsToCancel = true;
         }
         
-        private TweenContext? GetContext(Tween tween) =>
-            _activeContextLookup.TryGetValue(tween.Id, out var ctx) ? ctx : null;
+        internal void SetOnCancel(Tween tween, Action cancel)
+        {
+            var ctx = GetContext(tween);
+            var options = ctx!.Options;
+            options.OnCancel = cancel;
+            ctx.Options = options;
+        }
+
+        internal void SetOnComplete(Tween tween, Action complete)
+        {
+            var ctx = GetContext(tween);
+            var options = ctx!.Options;
+            options.OnComplete = complete;
+            ctx.Options = options;
+        }
+        
+        private TweenContext? GetContext(Tween tween) => _activeContextLookup.TryGetValue(tween.Id, out var ctx) ? ctx : null;
         
         private void AddContext(TweenContext ctx)
         {
@@ -96,7 +103,7 @@ namespace AuraTween
                     _activeContexts.Remove(ctx);
                     _contextPool.Release(ctx);
                     options.Updater(1f); // Force the updater to be "1" to re-evaluate its value in case we go over.
-                    //options.OnComplete?.Invoke();
+                    options.OnComplete?.Invoke();
                     continue;
                 }
 
@@ -105,7 +112,7 @@ namespace AuraTween
                     _activeContextLookup.Remove(ctx.Id);
                     _activeContexts.Remove(ctx);
                     _contextPool.Release(ctx);
-                    //options.OnCanceled?.Invoke();
+                    options.OnCancel?.Invoke();
                     continue;
                 }
 
