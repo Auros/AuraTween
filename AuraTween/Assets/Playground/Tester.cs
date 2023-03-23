@@ -27,13 +27,16 @@ namespace AuraTween
                 5f, 
                 v => mat.color = v,
                 Ease.InOutCubic.ToInterpolator(),
-                HSV);
+                HSV,
+                this);
             
             tween.SetOnCancel(() => print("canceled"));
             tween.SetOnComplete(() => print("finished"));
             
             yield return new WaitForSeconds(2f);
-            tween.Cancel();
+            tween.Restart();
+            yield return new WaitForSeconds(1f);
+            Destroy(this);
         }
 
         private static Action<float> HSV(Color start, Color end, Action<Color> updater)

@@ -94,6 +94,20 @@ namespace AuraTween
                 // Do not progress the tween if its paused.
                 if (!ctx.Paused)
                     ctx.Progress += time;
+
+                var lifetimeExpired = options.Lifetime != null && !options.Lifetime();
+                if (ctx.WantsToCancel || lifetimeExpired)
+                {
+                    _activeContextLookup.Remove(ctx.Id);
+                    _activeContexts.Remove(ctx);
+                    _contextPool.Release(ctx);
+                    
+                    // We only want to invoke the cancellation event if it was intended.
+                    if (lifetimeExpired)
+                        continue;
+                    
+                    options.OnCancel?.Invoke();
+                }
                 
                 // Check if the tween has been completed.
                 if (ctx.Progress >= options.Duration || options.Duration == 0)
@@ -104,15 +118,6 @@ namespace AuraTween
                     _contextPool.Release(ctx);
                     options.Updater(1f); // Force the updater to be "1" to re-evaluate its value in case we go over.
                     options.OnComplete?.Invoke();
-                    continue;
-                }
-
-                if (ctx.WantsToCancel)
-                {
-                    _activeContextLookup.Remove(ctx.Id);
-                    _activeContexts.Remove(ctx);
-                    _contextPool.Release(ctx);
-                    options.OnCancel?.Invoke();
                     continue;
                 }
 
