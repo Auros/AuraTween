@@ -27,16 +27,13 @@ namespace AuraTween
 
         public static Tween Run<T>(this TweenManager tweenManager, T start, T end, float duration, Action<T> updater, Func<float, float> interpolator, Func<T, T, Action<T>, Action<float>> assembler)
         {
-            var builder = new TweenBuilder<T>
+            var options = new TweenOptions
             {
-                EndValue = end,
-                Updater = updater,
-                StartValue = start,
                 Duration = duration,
-                Assembler = assembler,
-                Interpolator = interpolator
+                Interpolator = interpolator,
+                Updater = assembler(start, end, updater)
             };
-            return tweenManager.Run(builder.Build());
+            return tweenManager.Run(options);
         }
     }
 }
