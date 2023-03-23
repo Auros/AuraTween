@@ -9,14 +9,13 @@ namespace AuraTween
         [SerializeField]
         private TweenManager _tweenManager;
 
+        // ReSharper disable once Unity.IncorrectMethodSignature
         private async UniTaskVoid Start()
         {
             var mat = transform.GetComponent<Renderer>().material;
             
             await _tweenManager.Run(Color.red, Color.cyan, 5f, v => mat.color = v,
                 Ease.InOutCubic.ToInterpolator(), HSV, this);
-            
-            print("tween ended");
         }
 
         private static Action<float> HSV(Color start, Color end, Action<Color> updater)
