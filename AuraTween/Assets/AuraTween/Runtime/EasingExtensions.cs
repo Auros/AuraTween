@@ -4,7 +4,7 @@ namespace AuraTween
 {
     public static class EasingExtensions
     {
-        public static Func<float, float, float, float> ToInterpolator(this Ease ease)
+        public static Func<float, float> ToInterpolator(this Ease ease)
         {
             return ease switch
             {

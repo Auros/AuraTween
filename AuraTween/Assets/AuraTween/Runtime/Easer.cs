@@ -10,11 +10,13 @@ namespace AuraTween
     {
         internal const float BackOvershoot = 1.70158f;
         internal const float InOutBackOvershoot = 2.5949095f;
-        
+
+        public static float Linear(float time) => Linear(0, 1, time);
         public static float Linear(float start, float end, float time) => Mathf.Lerp(start, end, time);
 
         #region Sine
 
+        public static float InSine(float time) => InSine(0, 1, time);
         public static float InSine(float start, float end, float time)
         {
             end -= start;
@@ -22,11 +24,13 @@ namespace AuraTween
             return -end * cos + end + start;
         }
 
+        public static float OutSine(float time) => OutSine(0f, 1f, time);
         public static float OutSine(float start, float end, float time)
         {
             return 1f - InSine(start, end, 1f - time);
         }
 
+        public static float InOutSine(float time) => InOutSine(0f, 1f, time);
         public static float InOutSine(float start, float end, float time)
         {
             end -= start;
@@ -38,16 +42,19 @@ namespace AuraTween
 
         #region Quad
 
+        public static float InQuad(float time) => InQuad(0f, 1f, time);
         public static float InQuad(float start, float end, float time)
         {
             return (end - start) * time * time + start;
         }
 
+        public static float OutQuad(float time) => OutQuad(0f, 1f, time);
         public static float OutQuad(float start, float end, float time)
         {
             return -(end - start) * time * (time - 2) + start;
         }
 
+        public static float InOutQuad(float time) => InOutQuad(0f, 1f, time);
         public static float InOutQuad(float start, float end, float time)
         {
             time /= .5f;
@@ -62,17 +69,20 @@ namespace AuraTween
 
         #region Cubic
 
+        public static float InCubic(float time) => InCubic(0f, 1f, time);
         public static float InCubic(float start, float end, float time)
         {
             return (end - start) * time * time * time + start;
         }
-        
+
+        public static float OutCubic(float time) => OutCubic(0f, 1f, time);
         public static float OutCubic(float start, float end, float time)
         {
             time--;
             return (end - start) * (time * time * time + 1) + start;
         }
 
+        public static float InOutCubic(float time) => InOutCubic(0f, 1f, time);
         public static float InOutCubic(float start, float end, float time)
         {
             time /= .5f;
@@ -87,17 +97,20 @@ namespace AuraTween
 
         #region Quart
 
+        public static float InQuart(float time) => InQuart(0f, 1f, time);
         public static float InQuart(float start, float end, float time)
         {
             return (end - start) * time * time * time * time + start;
         }
-        
+
+        public static float OutQuart(float time) => OutQuart(0f, 1f, time);
         public static float OutQuart(float start, float end, float time)
         {
             time--;
             return (end - start) * (time * time * time * time - 1) + start;
         }
 
+        public static float InOutQuart(float time) => InOutQuart(0f, 1f, time);
         public static float InOutQuart(float start, float end, float time)
         {
             time /= .5f;
@@ -112,17 +125,20 @@ namespace AuraTween
 
         #region Quint
 
+        public static float InQuint(float time) => InQuint(0f, 1f, time);
         public static float InQuint(float start, float end, float time)
         {
             return (end - start) * time * time * time * time * time + start;
         }
-        
+
+        public static float OutQuint(float time) => OutQuint(0f, 1f, time);
         public static float OutQuint(float start, float end, float time)
         {
             time--;
             return (end - start) * (time * time * time * time * time + 1) + start;
         }
 
+        public static float InOutQuint(float time) => InOutQuint(0f, 1f, time);
         public static float InOutQuint(float start, float end, float time)
         {
             time /= .5f;
@@ -137,16 +153,19 @@ namespace AuraTween
 
         #region Exponential
 
+        public static float InExpo(float time) => InExpo(0f, 1f, time);
         public static float InExpo(float start, float end, float time)
         {
             return (end - start) * Mathf.Pow(2, 10 * (time - 1)) + start;
         }
 
+        public static float OutExpo(float time) => OutExpo(0f, 1f, time);
         public static float OutExpo(float start, float end, float time)
         {
             return (end - start) * (-Mathf.Pow(2, -10 * time) + 1) + start;
         }
 
+        public static float InOutExpo(float time) => InOutExpo(0f, 1f, time);
         public static float InOutExpo(float start, float end, float time)
         {
             time /= .5f;
@@ -161,17 +180,20 @@ namespace AuraTween
 
         #region Circle
 
+        public static float InCirc(float time) => InCirc(0f, 1f, time);
         public static float InCirc(float start, float end, float time)
         {
             return -(end - start) * (Mathf.Sqrt(1 - time * time) - 1) + start;
         }
 
+        public static float OutCirc(float time) => OutCirc(0f, 1f, time);
         public static float OutCirc(float start, float end, float time)
         {
             time = time-- * time;
             return (end - start) * Mathf.Sqrt(1 - time) + start;
         }
 
+        public static float InOutCirc(float time) => InOutCirc(0f, 1f, time);
         public static float InOutCirc(float start, float end, float time)
         {
             time /= .5f;
@@ -186,17 +208,20 @@ namespace AuraTween
 
         #region Back
 
+        public static float InBack(float time) => InBack(0f, 1f, time);
         public static float InBack(float start, float end, float time)
         {
             return (end - start) * time * time * ((BackOvershoot + 1) * time - BackOvershoot) + start;
         }
 
+        public static float OutBack(float time) => OutBack(0f, 1f, time);
         public static float OutBack(float start, float end, float time)
         {
             time -= 1f;
             return (end - start) * (time * time * ((BackOvershoot + 1) * time + BackOvershoot) + 1) + start;
         }
 
+        public static float InOutBack(float time) => InOutBack(0f, 1f, time);
         public static float InOutBack(float start, float end, float time)
         {
             end -= start;
@@ -211,6 +236,7 @@ namespace AuraTween
 
         #region Elastic
 
+        public static float InElastic(float time) => InElastic(0f, 1f, time);
         public static float InElastic(float start, float end, float time)
         {
             end -= start;
@@ -235,7 +261,8 @@ namespace AuraTween
 
             return -(a * Mathf.Pow(2, 10 * (time -= 1)) * Mathf.Sin((time - s) * (2 * Mathf.PI) / p)) + start;
         }
-        
+
+        public static float OutElastic(float time) => OutElastic(0f, 1f, time);
         public static float OutElastic(float start, float end, float time)
         {
             end -= start;
@@ -261,7 +288,8 @@ namespace AuraTween
 
             return a * Mathf.Pow(2, -10 * time) * Mathf.Sin((time - s) * (2 * Mathf.PI) / p) + end + start;
         }
-        
+
+        public static float InOutElastic(float time) => InOutElastic(0f, 1f, time);
         public static float InOutElastic(float start, float end, float time)
         {
             end -= start;
@@ -292,13 +320,15 @@ namespace AuraTween
         #endregion
 
         #region Bounce
-        
+
+        public static float InBounce(float time) => InBounce(0f, 1f, time);
         public static float InBounce(float start, float end, float time)
         {
             end -= start;
             return end - OutBounce(0, end, 1f - time) + start;
         }
 
+        public static float OutBounce(float time) => OutBounce(0f, 1f, time);
         public static float OutBounce(float start, float end, float time)
         {
             time /= 1f;
@@ -323,6 +353,7 @@ namespace AuraTween
             }
         }
 
+        public static float InOutBounce(float time) => InOutBounce(0f, 1f, time);
         public static float InOutBounce(float start, float end, float value)
         {
             end -= start;

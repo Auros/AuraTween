@@ -4,8 +4,8 @@ namespace AuraTween
 {
     public struct TweenBuilder<T>
     {
-        public Func<float, float, float, float> Interpolator;
-        public ITweenAssembler<T> Assembler;
+        public Func<T, T, Action<T>, Action<float>> Assembler;
+        public Func<float, float> Interpolator;
         public Action<T> Updater; 
         public float Duration;
         public T StartValue;
@@ -17,7 +17,7 @@ namespace AuraTween
             {
                 Duration = Duration,
                 Interpolator = Interpolator,
-                Updater = Assembler.Assemble(StartValue, EndValue, Updater)
+                Updater = Assembler(StartValue, EndValue, Updater)
             };
         }
     }

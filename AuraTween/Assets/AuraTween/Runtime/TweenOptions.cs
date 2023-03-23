@@ -6,6 +6,6 @@ namespace AuraTween
     {
         public float Duration;
         public Action<float> Updater;
-        public Func<float, float, float, float> Interpolator;
+        public Func<float, float> Interpolator;
     }
 }

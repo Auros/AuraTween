@@ -111,7 +111,7 @@ namespace AuraTween
 
                 var easer = ctx.Options.Interpolator;
                 var progress = ctx.Progress / options.Duration;
-                options.Updater(easer(0f, 1f, progress));
+                options.Updater(easer(progress));
             }
         }
 
