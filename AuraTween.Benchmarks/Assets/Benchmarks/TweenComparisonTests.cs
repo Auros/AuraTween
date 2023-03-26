@@ -36,9 +36,9 @@ namespace AuraTween.Benchmarks
             }
         }
 
-        private static Action<float> Bruh(TestVector s, TestVector e, Action<TestVector> t)
+        private static TestVector Bruh(TestVector s, TestVector e, float time)
         {
-            return j => t(new TestVector(s.x + j) );
+            return new TestVector(s.x + time);
         }
         
         [UnityTest, Performance]
@@ -59,9 +59,9 @@ namespace AuraTween.Benchmarks
             {
                 foreach (var tween in tweeners)
                 {
-                    //manager.Run(start, end, duration, v => tween.transform.localPosition = v, Easer.OutQuad, tween);
-                    manager.Run(new TestVector(), new TestVector(), duration,
-                        v => tween.transform.localPosition = new Vector3(v.x, 0f, 0f), Easer.OutQuad, Bruh, tween);
+                    manager.Run(start, end, duration, v => tween.transform.localPosition = v, Easer.OutQuad, tween);
+                    //manager.Run(new TestVector(), new TestVector(), duration,
+                    //    v => tween.transform.localPosition = new Vector3(v.x, 0f, 0f), Easer.OutQuad, Bruh, tween);
                 }
                 yield return new WaitForSeconds(duration);
             }

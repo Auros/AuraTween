@@ -26,13 +26,13 @@ namespace AuraTween
         public static Tween Run(this TweenManager tweenManager, Quaternion start, Quaternion end, float duration, Action<Quaternion> updater, Func<float, float> interpolator, Object? owner = null)
             => tweenManager.Run(start, end, duration, updater, interpolator, Assemblers.Quaternion, owner);
 
-        public static Tween Run<T>(this TweenManager tweenManager, T start, T end, float duration, Action<T> updater, Func<float, float> interpolator, Func<T, T, Action<T>, Action<float>> assembler, Object? owner = null)
+        public static Tween Run<T>(this TweenManager tweenManager, T start, T end, float duration, Action<T> updater, Func<float, float> interpolator, Func<T, T, float, T> assembler, Object? owner = null)
         {
             var options = new TweenOptions
             {
                 Duration = duration,
                 Interpolator = interpolator,
-                Updater = assembler(start, end, updater),
+                Updater = time => assembler(start, end, time), //;assembler(start, end, updater),
                 Lifetime = owner ? () => owner : null,
             };
             return tweenManager.Run(options);
