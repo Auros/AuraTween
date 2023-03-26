@@ -11,8 +11,10 @@ namespace AuraTween
         internal const float BackOvershoot = 1.70158f;
         internal const float InOutBackOvershoot = 2.5949095f;
 
-        public static float Linear(float time) => Linear(0, 1, time);
+        public static float Linear(float time) => time;
+        public static float FastLinear(ref float time) => time;
         public static float Linear(float start, float end, float time) => Mathf.Lerp(start, end, time);
+        public static float FastLinear(ref float start, ref float end, ref float time) => start + (end - start) * time;
 
         #region Sine
 

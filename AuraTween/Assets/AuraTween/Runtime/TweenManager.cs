@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AuraTween.Exceptions;
 using AuraTween.Internal;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -8,47 +9,65 @@ namespace AuraTween
 {
     public class TweenManager : MonoBehaviour
     {
+        [SerializeField]
+        [Tooltip("This number of tweens are pre-allocated when the tween manager starts. This is only applied .Start() is called for this component, so make sure you set it before that point.")]
+        private int _defaultTweenCapacity = 100;
+        
         // We store the contexts in both a list and dictionary.
         // The list is so we can loop over every active context without
         // allocating any garbage. The dictionary is so we can have O(1) perf
         // when looking for contexts from the individual tweens.
-        private readonly List<TweenContext> _activeContexts = new(10_000);
-        private readonly Dictionary<long, TweenContext> _activeContextLookup = new(10_000);
-        private ObjectPool<TweenContext> _contextPool = null!;
+        private List<TweenContext>? _activeContexts;
+        private ObjectPool<TweenContext>? _contextPool;
+        private Dictionary<long, TweenContext>? _activeContextLookup;
 
-        private void Awake()
+        private void Start()
         {
-            _contextPool = new ObjectPool<TweenContext>(() => new TweenContext(), ClearContext, ClearContext, ClearContext, false, 10_000);
+            _activeContexts = new List<TweenContext>(_defaultTweenCapacity);
+            _activeContextLookup = new Dictionary<long, TweenContext>(_defaultTweenCapacity);
+            _contextPool = new ObjectPool<TweenContext>(() => new TweenContext(), ClearContext, ClearContext, ClearContext, false, _defaultTweenCapacity);
             
             // Warm up the pool
-            var contexts = new TweenContext[10_000];
+            var contexts = new TweenContext[_defaultTweenCapacity];
             for (int i = 0; i < contexts.Length; i++)
                 contexts[i] = _contextPool.Get();
-            for (int i = 0; i < contexts.Length; i++)
-                _contextPool.Release(contexts[i]);
+            foreach (var ctx in contexts)
+                _contextPool.Release(ctx);
         }
-
+        
         private void OnDestroy()
         {
-            _contextPool.Dispose();
+            _contextPool?.Dispose();
+        }
+        
+        public void SetCapacity(int size)
+        {
+            if (0 > size)
+                size = 0;
+            
+            _defaultTweenCapacity = size;
         }
 
         public Tween Run(TweenOptions options)
         {
+            if (_contextPool == null)
+                throw new UninitializedTweenManagerException();
+            
             var handle = new Tween(this);
             var ctx = _contextPool.Get();
             ctx.Id = handle.Id;
             ctx.Updater = options.Updater;
-            ctx.OnCancel = options.OnCancel;
             ctx.Duration = options.Duration;
             ctx.Lifetime = options.Lifetime;
-            ctx.OnComplete = options.OnComplete;
             ctx.Interpolator = options.Interpolator;
             AddContext(ctx);
             return handle;
         }
 
-        internal bool IsTweenActive(Tween tween) => _activeContextLookup.ContainsKey(tween.Id);
+        internal bool IsTweenActive(Tween tween)
+        {
+            return _activeContextLookup != null && _activeContextLookup.ContainsKey(tween.Id);
+        }
         
         internal void PlayTween(Tween tween)
         {
@@ -59,13 +78,19 @@ namespace AuraTween
         internal void PauseTween(Tween tween)
         {
             var ctx = GetContext(tween);
-            ctx!.Paused = true;
+            if (ctx is null)
+                return;
+            
+            ctx.Paused = true;
         }
         
         internal void ResetTween(Tween tween)
         {
             var ctx = GetContext(tween);
-            ctx!.Progress = 0f;
+            if (ctx is null)
+                return;
+
+            ctx.Progress = 0f;
         }
         
         internal void CancelTween(Tween tween)
@@ -80,25 +105,37 @@ namespace AuraTween
         internal void SetOnCancel(Tween tween, Action cancel)
         {
             var ctx = GetContext(tween);
-            ctx!.OnCancel = cancel;
+            if (ctx is null)
+                return;
+
+            ctx.OnCancel = cancel;
         }
 
         internal void SetOnComplete(Tween tween, Action complete)
         {
             var ctx = GetContext(tween);
-            ctx!.OnComplete = complete;
+            if (ctx is null)
+                return;
+
+            ctx.OnComplete = complete;
         }
 
-        private TweenContext? GetContext(Tween tween) => _activeContextLookup.TryGetValue(tween.Id, out var ctx) ? ctx : null;
+        private TweenContext? GetContext(Tween tween) => _activeContextLookup != null && _activeContextLookup.TryGetValue(tween.Id, out var ctx) ? ctx : null;
         
         private void AddContext(TweenContext ctx)
         {
+            if (_activeContexts is null || _activeContextLookup is null)
+                return;
+            
             _activeContexts.Add(ctx);
             _activeContextLookup[ctx.Id] = ctx;
         }
 
         private void Update()
         {
+            if (_contextPool is null || _activeContexts is null || _activeContextLookup is null)
+                return;
+            
             var time = Time.deltaTime;
             // Iterate over every active context in reverse order
             // so we can remove them if they become if they're invalid.
@@ -141,7 +178,7 @@ namespace AuraTween
                 ctx.Updater?.Invoke(easer!(progress)); 
             }
         }
-
+        
         private static void ClearContext(TweenContext ctx)
         {
             ctx.Id = -1;

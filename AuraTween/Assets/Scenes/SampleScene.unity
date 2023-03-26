@@ -135,8 +135,8 @@ GameObject:
   - component: {fileID: 445979765}
   - component: {fileID: 445979764}
   - component: {fileID: 445979763}
-  - component: {fileID: 445979762}
   - component: {fileID: 445979761}
+  - component: {fileID: 445979762}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -156,6 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df931618c3507ac4fabf909d6fa79062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _defaultTweenCapacity: 100
 --- !u!114 &445979762
 MonoBehaviour:
   m_ObjectHideFlags: 0
