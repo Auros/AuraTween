@@ -1,0 +1,30 @@
+{
+    "name": "AuraTween.Benchmarks",
+    "rootNamespace": "AuraTween.Benchmarks",
+    "references": [
+        "GUID:c0dd0d10738d4ad4a9de57c559d0ca1b",
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:c88f40d7426e3024bb0b22e8d994255f",
+        "GUID:71370e71a07a9ce4593b5da3472bbda3",
+        "GUID:da05cfec51b6c974cb48c8b604fd519d",
+        "GUID:6f0786a5bbd4d44b992c72105d6500fe",
+        "GUID:1a4cffb770ce347a39cea41a326324ec",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "tvOS",
+        "WebGL"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "DOTween.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

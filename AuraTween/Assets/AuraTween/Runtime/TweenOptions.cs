@@ -2,7 +2,7 @@
 
 namespace AuraTween
 {
-    public struct TweenOptions
+    public ref struct TweenOptions
     {
         public float Duration;
         public Action? OnCancel;

@@ -1,15 +1,29 @@
-﻿namespace AuraTween.Internal
+﻿using System;
+
+namespace AuraTween.Internal
 {
     internal class TweenContext
     {
-        public long Id { get; set; }
+        public long Id;
+
+        public float Progress;
+
+        public bool WantsToCancel;
+
+        public bool Paused;
+
+        public bool HasLifetime;
         
-        public float Progress { get; set; }
+        public float Duration;
         
-        public bool WantsToCancel { get; set; }
+        public Action? OnCancel;
         
-        public bool Paused { get; set; }
+        public Action? OnComplete;
         
-        public TweenOptions Options { get; set; }
+        public Func<bool>? Lifetime;
+        
+        public Action<float>? Updater;
+        
+        public Func<float, float>? Interpolator;
     }
 }

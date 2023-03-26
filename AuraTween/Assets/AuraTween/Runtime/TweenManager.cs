@@ -12,17 +12,38 @@ namespace AuraTween
         // The list is so we can loop over every active context without
         // allocating any garbage. The dictionary is so we can have O(1) perf
         // when looking for contexts from the individual tweens.
-        private readonly List<TweenContext> _activeContexts = new();
-        private readonly Dictionary<long, TweenContext> _activeContextLookup = new();
+        private readonly List<TweenContext> _activeContexts = new(10_000);
+        private readonly Dictionary<long, TweenContext> _activeContextLookup = new(10_000);
+        private ObjectPool<TweenContext> _contextPool = null!;
 
-        private readonly ObjectPool<TweenContext> _contextPool = new(() => new TweenContext(), ClearContext, ClearContext, ClearContext);
+        private void Awake()
+        {
+            _contextPool = new ObjectPool<TweenContext>(() => new TweenContext(), ClearContext, ClearContext, ClearContext, false, 10_000);
+            
+            // Warm up the pool
+            var contexts = new TweenContext[10_000];
+            for (int i = 0; i < contexts.Length; i++)
+                contexts[i] = _contextPool.Get();
+            for (int i = 0; i < contexts.Length; i++)
+                _contextPool.Release(contexts[i]);
+        }
+
+        private void OnDestroy()
+        {
+            _contextPool.Dispose();
+        }
 
         public Tween Run(TweenOptions options)
         {
             var handle = new Tween(this);
             var ctx = _contextPool.Get();
-            ctx.Options = options;
             ctx.Id = handle.Id;
+            ctx.Updater = options.Updater;
+            ctx.OnCancel = options.OnCancel;
+            ctx.Duration = options.Duration;
+            ctx.Lifetime = options.Lifetime;
+            ctx.OnComplete = options.OnComplete;
+            ctx.Interpolator = options.Interpolator;
             AddContext(ctx);
             return handle;
         }
@@ -59,19 +80,15 @@ namespace AuraTween
         internal void SetOnCancel(Tween tween, Action cancel)
         {
             var ctx = GetContext(tween);
-            var options = ctx!.Options;
-            options.OnCancel = cancel;
-            ctx.Options = options;
+            ctx!.OnCancel = cancel;
         }
 
         internal void SetOnComplete(Tween tween, Action complete)
         {
             var ctx = GetContext(tween);
-            var options = ctx!.Options;
-            options.OnComplete = complete;
-            ctx.Options = options;
+            ctx!.OnComplete = complete;
         }
-        
+
         private TweenContext? GetContext(Tween tween) => _activeContextLookup.TryGetValue(tween.Id, out var ctx) ? ctx : null;
         
         private void AddContext(TweenContext ctx)
@@ -89,13 +106,11 @@ namespace AuraTween
             {
                 var ctx = _activeContexts[i];
                 
-                var options = ctx.Options;
-                
                 // Do not progress the tween if its paused.
                 if (!ctx.Paused)
                     ctx.Progress += time;
 
-                var lifetimeExpired = options.Lifetime != null && !options.Lifetime();
+                var lifetimeExpired = ctx.Lifetime != null && !ctx.Lifetime();
                 if (ctx.WantsToCancel || lifetimeExpired)
                 {
                     _activeContextLookup.Remove(ctx.Id);
@@ -106,24 +121,26 @@ namespace AuraTween
                     if (lifetimeExpired)
                         continue;
                     
-                    options.OnCancel?.Invoke();
+                    ctx.OnCancel?.Invoke();
                 }
                 
                 // Check if the tween has been completed.
-                if (ctx.Progress >= options.Duration || options.Duration == 0)
+                if (ctx.Progress >= ctx.Duration || ctx.Duration == 0)
                 {
                     // Tween was completed. Remove from active, invoke necessary events, and cleanup.
                     _activeContextLookup.Remove(ctx.Id);
                     _activeContexts.Remove(ctx);
                     _contextPool.Release(ctx);
-                    options.Updater(1f); // Force the updater to be "1" to re-evaluate its value in case we go over.
-                    options.OnComplete?.Invoke();
+                    ctx.Updater?.Invoke(1f); // Force the updater to be "1" to re-evaluate its value in case we go over.
+                    ctx.OnComplete?.Invoke();
                     continue;
                 }
 
-                var easer = ctx.Options.Interpolator;
-                var progress = ctx.Progress / options.Duration;
-                options.Updater(easer(progress));
+                var easer = ctx.Interpolator;
+                var progress = ctx.Progress / ctx.Duration;
+                ctx.Updater?.Invoke(progress); 
+                _ = easer;
+                _ = progress;
             }
         }
 
@@ -133,7 +150,12 @@ namespace AuraTween
             ctx.Progress = 0;
             ctx.WantsToCancel = false;
             ctx.Paused = false;
-            ctx.Options = default;
+            ctx.OnCancel = null;
+            ctx.OnComplete = null;
+            ctx.Updater = null!;
+            ctx.Duration = 0;
+            ctx.Interpolator = null!;
+            ctx.Lifetime = null;
         }
     }
 }
