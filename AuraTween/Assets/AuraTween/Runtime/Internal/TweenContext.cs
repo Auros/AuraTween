@@ -2,7 +2,7 @@
 
 namespace AuraTween.Internal
 {
-    internal class TweenContext
+    internal sealed class TweenContext
     {
         public long Id;
 
