@@ -12,7 +12,7 @@ namespace AuraTween
         
         private void Start()
         {
-            var procedure = _ease.ToInterpolator();
+            var procedure = _ease.ToProcedure();
             for (int i = 0; i < 100; i++)
             {
                 var time = i * 0.01f;

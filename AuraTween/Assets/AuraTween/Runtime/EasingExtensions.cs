@@ -6,7 +6,7 @@ namespace AuraTween
     [PublicAPI]
     public static class EasingExtensions
     {
-        public static EaseProcedure ToInterpolator(this Ease ease)
+        public static EaseProcedure ToProcedure(this Ease ease)
         {
             return ease switch
             {

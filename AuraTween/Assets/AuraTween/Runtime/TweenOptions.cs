@@ -9,6 +9,6 @@ namespace AuraTween
         public float Duration;
         public Func<bool>? Lifetime;
         public Action<float> Updater;
-        public EaseProcedure Interpolator;
+        public EaseProcedure Procedure;
     }
 }

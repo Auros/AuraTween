@@ -24,6 +24,6 @@ namespace AuraTween.Internal
         
         public Action<float>? Updater;
         
-        public EaseProcedure? Interpolator;
+        public EaseProcedure? Procedure;
     }
 }

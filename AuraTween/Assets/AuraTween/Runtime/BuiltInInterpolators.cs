@@ -2,7 +2,7 @@
 
 namespace AuraTween
 {
-    internal static class Assemblers
+    internal static class BuiltInInterpolators
     {
         public static Color Color(ref Color start, ref Color end, ref float time)
         {

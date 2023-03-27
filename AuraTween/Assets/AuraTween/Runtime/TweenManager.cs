@@ -76,7 +76,7 @@ namespace AuraTween
             ctx.Updater = options.Updater;
             ctx.Duration = options.Duration;
             ctx.Lifetime = options.Lifetime;
-            ctx.Interpolator = options.Interpolator;
+            ctx.Procedure = options.Procedure;
             AddContext(ctx);
             return handle;
         }
@@ -190,7 +190,7 @@ namespace AuraTween
                     continue;
                 }
 
-                var easer = ctx.Interpolator;
+                var easer = ctx.Procedure;
                 var progress = ctx.Progress / ctx.Duration;
                 ctx.Updater?.Invoke(easer!(ref progress)); 
             }
@@ -206,7 +206,7 @@ namespace AuraTween
             ctx.OnComplete = null;
             ctx.Updater = null!;
             ctx.Duration = 0;
-            ctx.Interpolator = null!;
+            ctx.Procedure = null!;
             ctx.Lifetime = null;
         }
     }
