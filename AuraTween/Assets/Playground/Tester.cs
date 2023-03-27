@@ -7,6 +7,9 @@ namespace AuraTween
         [SerializeField]
         private TweenManager _tweenManager;
 
+        [SerializeField]
+        private AnimationCurve _animationCurve;
+
         /*private IEnumerator Start()
         {
             Vector3 start = default;
@@ -33,7 +36,7 @@ namespace AuraTween
         {
             var mat = transform.GetComponent<Renderer>().material;
 
-            _tweenManager.Run(Vector3.zero, Vector3.one * 5f, 5f, v => transform.localPosition = v, Easer.OutBounce,
+            _tweenManager.Run(Vector3.zero, Vector3.one * 5f, 5f, v => transform.localPosition = v, Curve,
                 this);
             
             _tweenManager.Run(Color.red, Color.cyan, 5f, v => mat.color = v,
@@ -49,5 +52,7 @@ namespace AuraTween
             var v = Mathf.Lerp(startV, endV, time);
             return Color.HSVToRGB(h, s, v);
         }
+
+        private float Curve(ref float @in) => _animationCurve.Evaluate(@in);
     }
 }
