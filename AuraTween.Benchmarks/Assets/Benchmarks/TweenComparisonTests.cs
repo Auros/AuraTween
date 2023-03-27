@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
 using AnimeTask;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -16,8 +15,8 @@ namespace AuraTween.Benchmarks
     [PublicAPI]
     public class TweenComparisonTests
     {
-        private const int N = 10_000;
         private const int Cooldown = 1;
+        private static int[] _counts = { 10_000 };
         
         public const string AuraTweenGroup = "AuraTween";
         public const string DoTweenGroup = "DOTween";
@@ -26,18 +25,19 @@ namespace AuraTween.Benchmarks
         public const string AnimeTaskGroup = "AnimeTask";
 
         [UnityTest, Performance]
-        public IEnumerator Test()
+        public IEnumerator ActiveTweenStress([ValueSource(nameof(_counts))] int count)
         {
             Vector3 start = default;
             var end = Vector3.one;
             const float duration = 0.5f;
 
             var manager = Helper.Manager;
-            manager.SetCapacity(N);
+            manager.SetCapacity(count);
             manager.enabled = true;
 
-            var tweeners = CreateTweeners(N);
+            var tweeners = CreateTweeners(count);
             
+            yield return new WaitForSecondsRealtime(Cooldown);
             GC.Collect();
             yield return new WaitForSecondsRealtime(Cooldown);
             
@@ -54,13 +54,13 @@ namespace AuraTween.Benchmarks
             UnityEngine.Object.Destroy(manager);
             
             DeleteTweeners(tweeners);
-            tweeners = CreateTweeners(N);
-            GC.Collect();
+            tweeners = CreateTweeners(count);
  
             yield return new WaitForSecondsRealtime(Cooldown);
+            DOTween.SetTweensCapacity(count + 1, 50);
+            GC.Collect();
+            yield return new WaitForSecondsRealtime(Cooldown);
 
-            DOTween.SetTweensCapacity(N + 1, 50);
-            
             using (Measure.Frames().Scope(DoTweenGroup))
             {
                 foreach (var tween in tweeners)
@@ -71,12 +71,14 @@ namespace AuraTween.Benchmarks
             UnityEngine.Object.Destroy(DOTween.instance);
             
             DeleteTweeners(tweeners);
-            tweeners = CreateTweeners(N);
+            tweeners = CreateTweeners(count);
             GC.Collect();
             
             yield return new WaitForSecondsRealtime(Cooldown);
             
-            LeanTween.init(N);
+            LeanTween.init(count);
+            
+            yield return new WaitForSecondsRealtime(Cooldown);
             
             using (Measure.Frames().Scope(LeanTweenGroup))
             {
@@ -86,9 +88,10 @@ namespace AuraTween.Benchmarks
             }
             
             DeleteTweeners(tweeners);
-            tweeners = CreateTweeners(N);
-            GC.Collect();
+            tweeners = CreateTweeners(count);
             
+            yield return new WaitForSecondsRealtime(Cooldown);
+            GC.Collect();
             yield return new WaitForSecondsRealtime(Cooldown);
             
             using (Measure.Frames().Scope(UnityTweenGroup))
@@ -99,9 +102,10 @@ namespace AuraTween.Benchmarks
             }
             
             DeleteTweeners(tweeners);
-            tweeners = CreateTweeners(N);
-            GC.Collect();
+            tweeners = CreateTweeners(count);
             
+            yield return new WaitForSecondsRealtime(Cooldown);
+            GC.Collect();
             yield return new WaitForSecondsRealtime(Cooldown);
             
             using (Measure.Frames().Scope(AnimeTaskGroup))

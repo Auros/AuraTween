@@ -7,6 +7,7 @@ using UnityEngine.Pool;
 
 namespace AuraTween
 {
+    [DefaultExecutionOrder(-5000)] // We want this to execute earlier. Our current design means if someone spawns a tween before .Start(), an exception will be thrown.
     public class TweenManager : MonoBehaviour
     {
         [SerializeField]
