@@ -6,18 +6,23 @@ namespace AuraTween
     {
         public static Color Color(ref Color start, ref Color end, ref float time)
         {
-            return UnityEngine.Color.Lerp(start, end, time);
+            return new Color(
+                Easer.FastLinear(ref start.r, ref end.r, ref time),
+                Easer.FastLinear(ref start.g, ref end.g, ref time),
+                Easer.FastLinear(ref start.b, ref end.b, ref time),
+                Easer.FastLinear(ref start.a, ref end.a, ref time)
+            );
         }
         
         public static float Float(ref float start, ref float end, ref float time)
         {
-            return Mathf.Lerp(start, end, time);
+            return Easer.FastLinear(ref start, ref end, ref time);
         }
         
         public static Pose Pose(ref Pose start, ref Pose end, ref float time)
         {
-            var pos = UnityEngine.Vector3.Lerp(start.position, end.position, time);
-            var rot = UnityEngine.Quaternion.Lerp(start.rotation, end.rotation, time);
+            var pos = Vector3(ref start.position, ref end.position, ref time);
+            var rot = Quaternion(ref start.rotation, ref end.rotation, ref time);
             return new Pose(pos, rot);
         }
         
@@ -37,7 +42,10 @@ namespace AuraTween
         
         public static Vector2 Vector2(ref Vector2 start, ref Vector2 end, ref float time)
         {
-            return UnityEngine.Vector2.Lerp(start, end, time);
+            return new Vector3(
+                Easer.FastLinear(ref start.x, ref end.x, ref time),
+                Easer.FastLinear(ref start.y, ref end.y, ref time)
+            );
         }
     }
 }
