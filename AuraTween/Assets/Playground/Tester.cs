@@ -33,11 +33,11 @@ namespace AuraTween
         {
             var mat = transform.GetComponent<Renderer>().material;
 
-            _tweenManager.Run(Vector3.zero, Vector3.one * 5f, 5f, v => transform.localPosition = v, Easer.OutQuad,
+            _tweenManager.Run(Vector3.zero, Vector3.one * 5f, 5f, v => transform.localPosition = v, Easer.OutBounce,
                 this);
             
             _tweenManager.Run(Color.red, Color.cyan, 5f, v => mat.color = v,
-                Ease.Linear.ToInterpolator(), HSV, this);
+                Ease.OutBounce.ToInterpolator(), HSV, this);
         }
 
         private static Color HSV(ref Color start, ref Color end, ref float time)
