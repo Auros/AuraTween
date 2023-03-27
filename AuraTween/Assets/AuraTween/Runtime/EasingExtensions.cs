@@ -4,11 +4,11 @@ namespace AuraTween
 {
     public static class EasingExtensions
     {
-        public static Func<float, float> ToInterpolator(this Ease ease)
+        public static EaseProcedure ToInterpolator(this Ease ease)
         {
             return ease switch
             {
-                Ease.Linear => Easer.Linear,
+                Ease.Linear => Easer.FastLinear,
                 Ease.InSine => Easer.InSine,
                 Ease.OutSine => Easer.OutSine,
                 Ease.InOutSine => Easer.InOutSine,

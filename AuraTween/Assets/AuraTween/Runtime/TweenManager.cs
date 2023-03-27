@@ -175,7 +175,7 @@ namespace AuraTween
 
                 var easer = ctx.Interpolator;
                 var progress = ctx.Progress / ctx.Duration;
-                ctx.Updater?.Invoke(easer!(progress)); 
+                ctx.Updater?.Invoke(easer!(ref progress)); 
             }
         }
         

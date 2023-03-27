@@ -18,350 +18,275 @@ namespace AuraTween
 
         #region Sine
 
-        public static float InSine(float time) => InSine(0, 1, time);
-        public static float InSine(float start, float end, float time)
+        public static float InSine(ref float time)
         {
-            end -= start;
             var cos = Mathf.Cos(time * (Mathf.PI * 0.5f));
-            return -end * cos + end + start;
+            return -1f * cos + 1f;
         }
 
-        public static float OutSine(float time) => OutSine(0f, 1f, time);
-        public static float OutSine(float start, float end, float time)
+        public static float OutSine(ref float time)
         {
-            return 1f - InSine(start, end, 1f - time);
+            var opposite = 1f - time;
+            return 1f - InSine(ref opposite);
         }
 
-        public static float InOutSine(float time) => InOutSine(0f, 1f, time);
-        public static float InOutSine(float start, float end, float time)
+        public static float InOutSine(ref float time)
         {
-            end -= start;
             var cos = Mathf.Cos(time * Mathf.PI) - 1;
-            return -end * 0.5f * cos + start;
+            return -1f * 0.5f * cos;
         }
         
         #endregion
 
         #region Quad
 
-        public static float InQuad(float time) => InQuad(0f, 1f, time);
-        public static float InQuad(float start, float end, float time)
-        {
-            return (end - start) * time * time + start;
-        }
+        public static float InQuad(ref float time) => time * time;
 
-        public static float OutQuad(float time) => OutQuad(0f, 1f, time);
-        public static float OutQuad(float start, float end, float time)
-        {
-            return -(end - start) * time * (time - 2) + start;
-        }
+        public static float OutQuad(ref float time) => -1f * time * (time - 2);
 
-        public static float InOutQuad(float time) => InOutQuad(0f, 1f, time);
-        public static float InOutQuad(float start, float end, float time)
+        public static float InOutQuad(ref float time)
         {
-            time /= .5f;
-            end -= start;
-            if (time < 1)
-                return end * 0.5f * time * time + start;
-            time--;
-            return -end * 0.5f * (time * (time - 2) - 1) + start;
+            var newTime = time / 0.5f;
+            if (newTime < 1)
+                return 0.5f * newTime * newTime;
+            newTime--;
+            return -1f * 0.5f * (newTime * (newTime - 2) - 1);
         }
 
         #endregion
 
         #region Cubic
 
-        public static float InCubic(float time) => InCubic(0f, 1f, time);
-        public static float InCubic(float start, float end, float time)
+        public static float InCubic(ref float time) => time * time * time;
+
+        public static float OutCubic(ref float time)
         {
-            return (end - start) * time * time * time + start;
+            var newTime = time - 1f;
+            return InCubic(ref newTime) + 1;
         }
 
-        public static float OutCubic(float time) => OutCubic(0f, 1f, time);
-        public static float OutCubic(float start, float end, float time)
+        public static float InOutCubic(ref float time)
         {
-            time--;
-            return (end - start) * (time * time * time + 1) + start;
-        }
-
-        public static float InOutCubic(float time) => InOutCubic(0f, 1f, time);
-        public static float InOutCubic(float start, float end, float time)
-        {
-            time /= .5f;
-            end -= start;
-            if (time < 1)
-                return end * 0.5f * time * time * time + start;
-            time -= 2;
-            return end * 0.5f * (time * time * time + 2) + start;
+            var newTime = time / 0.5f;
+            if (newTime < 1)
+                return 0.5f * newTime * newTime * newTime;
+            newTime -= 2;
+            return 0.5f * (newTime * newTime * newTime + 2);
         }
 
         #endregion
 
         #region Quart
 
-        public static float InQuart(float time) => InQuart(0f, 1f, time);
-        public static float InQuart(float start, float end, float time)
+        public static float InQuart(ref float time) => time * time * time * time;
+
+        public static float OutQuart(ref float time)
         {
-            return (end - start) * time * time * time * time + start;
+            var newTime = time - 1f;
+            return (InQuart(ref newTime) - 1f) * -1f;
         }
 
-        public static float OutQuart(float time) => OutQuart(0f, 1f, time);
-        public static float OutQuart(float start, float end, float time)
+        public static float InOutQuart(ref float time)
         {
-            time--;
-            return (end - start) * (time * time * time * time - 1) + start;
-        }
-
-        public static float InOutQuart(float time) => InOutQuart(0f, 1f, time);
-        public static float InOutQuart(float start, float end, float time)
-        {
-            time /= .5f;
-            end -= start;
-            if (time < 1)
-                return end * 0.5f * time * time * time * time + start;
-            time -= 2;
-            return -end * 0.5f * (time * time * time * time - 2) + start;
+            var newTime = time / 0.5f;
+            if (newTime < 1)
+                return 0.5f * InQuart(ref newTime);
+            newTime -= 2;
+            return -1f * 0.5f * (InQuart(ref newTime) - 2);
         }
 
         #endregion
 
         #region Quint
 
-        public static float InQuint(float time) => InQuint(0f, 1f, time);
-        public static float InQuint(float start, float end, float time)
+        public static float InQuint(ref float time) => time * time * time * time * time;
+
+        public static float OutQuint(ref float time)
         {
-            return (end - start) * time * time * time * time * time + start;
+            var newTime = time - 1f;
+            return InQuint(ref newTime) + 1f;
         }
 
-        public static float OutQuint(float time) => OutQuint(0f, 1f, time);
-        public static float OutQuint(float start, float end, float time)
+        public static float InOutQuint(ref float time)
         {
-            time--;
-            return (end - start) * (time * time * time * time * time + 1) + start;
-        }
-
-        public static float InOutQuint(float time) => InOutQuint(0f, 1f, time);
-        public static float InOutQuint(float start, float end, float time)
-        {
-            time /= .5f;
-            end -= start;
-            if (time < 1)
-                return end * 0.5f * time * time * time * time * time + start;
-            time -= 2;
-            return end * 0.5f * (time * time * time * time * time + 2) + start;
+            var newTime = time / .5f;
+            if (newTime < 1)
+                return 0.5f * InQuint(ref newTime);
+            newTime -= 2;
+            return 0.5f * (InQuint(ref newTime) + 2);
         }
         
         #endregion
 
         #region Exponential
 
-        public static float InExpo(float time) => InExpo(0f, 1f, time);
-        public static float InExpo(float start, float end, float time)
-        {
-            return (end - start) * Mathf.Pow(2, 10 * (time - 1)) + start;
-        }
+        public static float InExpo(ref float time) => Mathf.Pow(2, 10 * (time - 1));
 
-        public static float OutExpo(float time) => OutExpo(0f, 1f, time);
-        public static float OutExpo(float start, float end, float time)
-        {
-            return (end - start) * (-Mathf.Pow(2, -10 * time) + 1) + start;
-        }
+        public static float OutExpo(ref float time) => -Mathf.Pow(2, -10 * time) + 1;
 
-        public static float InOutExpo(float time) => InOutExpo(0f, 1f, time);
-        public static float InOutExpo(float start, float end, float time)
+        public static float InOutExpo(ref float time)
         {
-            time /= .5f;
-            end -= start;
-            if (time < 1)
-                return end * 0.5f * Mathf.Pow(2, 10 * (time - 1)) + start;
-            time--;
-            return end * 0.5f * (-Mathf.Pow(2, -10 * time) + 2) + start;
+            var newTime = time / 0.5f;
+            if (newTime < 1)
+                return 0.5f * Mathf.Pow(2, 10 * (newTime - 1));
+            newTime--;
+            return 0.5f * (-Mathf.Pow(2, -10 * newTime) + 2);
         }
 
         #endregion
 
         #region Circle
 
-        public static float InCirc(float time) => InCirc(0f, 1f, time);
-        public static float InCirc(float start, float end, float time)
-        {
-            return -(end - start) * (Mathf.Sqrt(1 - time * time) - 1) + start;
-        }
+        public static float InCirc(ref float time) => -1f * (Mathf.Sqrt(1 - time * time) - 1);
 
-        public static float OutCirc(float time) => OutCirc(0f, 1f, time);
-        public static float OutCirc(float start, float end, float time)
-        {
-            time = time-- * time;
-            return (end - start) * Mathf.Sqrt(1 - time) + start;
-        }
+        public static float OutCirc(ref float time) => Mathf.Sqrt(1 - (time - 1) * (time - 1));
 
-        public static float InOutCirc(float time) => InOutCirc(0f, 1f, time);
-        public static float InOutCirc(float start, float end, float time)
+        public static float InOutCirc(ref float time)
         {
-            time /= .5f;
-            end -= start;
-            if (time < 1) 
-                return -end * 0.5f * (Mathf.Sqrt(1 - time * time) - 1) + start;
-            time -= 2;
-            return end * 0.5f * (Mathf.Sqrt(1 - time * time) + 1) + start;
+            var newTime = time / 0.5f;
+            if (newTime < 1) 
+                return -1f * 0.5f * (Mathf.Sqrt(1 - newTime * newTime) - 1);
+            newTime -= 2;
+            return 0.5f * (Mathf.Sqrt(1 - newTime * newTime) + 1);
         }
 
         #endregion
 
         #region Back
 
-        public static float InBack(float time) => InBack(0f, 1f, time);
-        public static float InBack(float start, float end, float time)
+        public static float InBack(ref float time) => time * time * ((BackOvershoot + 1) * time - BackOvershoot);
+
+        public static float OutBack(ref float time)
         {
-            return (end - start) * time * time * ((BackOvershoot + 1) * time - BackOvershoot) + start;
+            var newTime = time - 1f;
+            return newTime * newTime * ((BackOvershoot + 1) * newTime + BackOvershoot) + 1;
         }
 
-        public static float OutBack(float time) => OutBack(0f, 1f, time);
-        public static float OutBack(float start, float end, float time)
+        public static float InOutBack(ref float time)
         {
-            time -= 1f;
-            return (end - start) * (time * time * ((BackOvershoot + 1) * time + BackOvershoot) + 1) + start;
-        }
-
-        public static float InOutBack(float time) => InOutBack(0f, 1f, time);
-        public static float InOutBack(float start, float end, float time)
-        {
-            end -= start;
-            time /= 0.5f;
-            if (1 > time)
-                return end * 0.5f * (time * time * ((InOutBackOvershoot + 1) * time - InOutBackOvershoot)) + start;
-            time -= 2;
-            return end * 0.5f * (time * time * ((InOutBackOvershoot + 1) * time + InOutBackOvershoot) + 2) + start;
+            var newTime = time / 0.5f;
+            if (1 > newTime)
+                return 0.5f * (newTime * newTime * ((InOutBackOvershoot + 1f) * newTime - InOutBackOvershoot));
+            newTime -= 2;
+            return 0.5f * (newTime * newTime * ((InOutBackOvershoot + 1f) * newTime + InOutBackOvershoot) + 2);
         }
 
         #endregion
 
         #region Elastic
 
-        public static float InElastic(float time) => InElastic(0f, 1f, time);
-        public static float InElastic(float start, float end, float time)
+        public static float InElastic(ref float time)
         {
-            end -= start;
-            const float p = .3f;
             float s;
             float a = 0;
-
-            if (time == 0) return start;
-
-            if (Mathf.Approximately(time, 1f))
-                return start + end;
-
-            if (a == 0f || a < Mathf.Abs(end))
-            {
-                a = end;
-                s = p / 4;
-            }
-            else
-            {
-                s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
-            }
-
-            return -(a * Mathf.Pow(2, 10 * (time -= 1)) * Mathf.Sin((time - s) * (2 * Mathf.PI) / p)) + start;
-        }
-
-        public static float OutElastic(float time) => OutElastic(0f, 1f, time);
-        public static float OutElastic(float start, float end, float time)
-        {
-            end -= start;
-
-            const float p = .3f;
-            float a = 0;
-            float s;
-
-            if (time == 0) return start;
-
-            if (Mathf.Approximately(time, 1f))
-                return start + end;
-
-            if (a == 0f || a < Mathf.Abs(end))
-            {
-                a = end;
-                s = p * 0.25f;
-            }
-            else
-            {
-                s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
-            }
-
-            return a * Mathf.Pow(2, -10 * time) * Mathf.Sin((time - s) * (2 * Mathf.PI) / p) + end + start;
-        }
-
-        public static float InOutElastic(float time) => InOutElastic(0f, 1f, time);
-        public static float InOutElastic(float start, float end, float time)
-        {
-            end -= start;
-
             const float d = 1f;
             const float p = d * .3f;
-            float s;
-            float a = 0;
 
-            if (time == 0) return start;
+            if (time == 0)
+                return 0;
 
-            if (Math.Abs((time /= d * 0.5f) - 2) < .001f) return start + end;
+            var newTime = time;
+            if (Mathf.Abs((newTime /= d) - 1) < 0.0001f)
+                return 1f;
 
-            if (a == 0f || a < Mathf.Abs(end))
+            if (a is 0f or < 1f)
             {
-                a = end;
+                a = 1f;
                 s = p / 4;
             }
             else
             {
-                s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
+                s = p / (2 * Mathf.PI) * Mathf.Asin(1f / a);
             }
 
-            if (time < 1) return -0.5f * (a * Mathf.Pow(2, 10 * (time -= 1)) * Mathf.Sin((time * d - s) * (2 * Mathf.PI) / p)) + start;
-            return a * Mathf.Pow(2, -10 * (time -= 1)) * Mathf.Sin((time * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
+            return -(a * Mathf.Pow(2, 10 * (newTime -= 1)) * Mathf.Sin((newTime * d - s) * (2 * Mathf.PI) / p));
+        }
+
+        public static float OutElastic(ref float time)
+        {
+            const float p = .3f;
+            const float s = p * 0.25f;
+            const float a = 1f;
+
+            if (time == 0)
+                return 0;
+
+            if (Mathf.Approximately(time, 1f))
+                return 1f;
+
+            return a * Mathf.Pow(2, -10 * time) * Mathf.Sin((time - s) * (2 * Mathf.PI) / p) + 1f;
+        }
+
+        public static float InOutElastic(ref float time)
+        {
+            float s;
+            float a = 0;
+            const float d = 1f;
+            const float p = d * .3f;
+
+            if (time == 0)
+                return 0;
+
+            var newTime = time;
+            if (Math.Abs((newTime /= d * 0.5f) - 2) < 0.0001f)
+                return 1f;
+
+            if (a is 0f or < 1f)
+            {
+                a = 1f;
+                s = p / 4;
+            }
+            else
+            {
+                s = p / (2 * Mathf.PI) * Mathf.Asin(1f / a);
+            }
+
+            if (newTime < 1)
+                return -0.5f * (a * Mathf.Pow(2, 10 * (newTime -= 1)) * Mathf.Sin((newTime * d - s) * (2 * Mathf.PI) / p));
+            return a * Mathf.Pow(2, -10 * (newTime -= 1)) * Mathf.Sin((newTime * d - s) * (2 * Mathf.PI) / p) * 0.5f + 1f;
         }
         
         #endregion
 
         #region Bounce
 
-        public static float InBounce(float time) => InBounce(0f, 1f, time);
-        public static float InBounce(float start, float end, float time)
+        public static float InBounce(ref float time)
         {
-            end -= start;
-            return end - OutBounce(0, end, 1f - time) + start;
+            var newTime = 1f - time;
+            return 1f - OutBounce(ref newTime);
         }
 
-        public static float OutBounce(float time) => OutBounce(0f, 1f, time);
-        public static float OutBounce(float start, float end, float time)
+        public static float OutBounce(ref float time)
         {
-            time /= 1f;
-            end -= start;
             switch (time)
             {
                 case < 1 / 2.75f:
-                    return end * (7.5625f * time * time) + start;
+                    return 1f * (7.5625f * time * time);
                 case < 2 / 2.75f:
-                    time -= 1.5f / 2.75f;
-                    return end * (7.5625f * time * time + .75f) + start;
+                    var newTime = time - 1.5f / 2.75f;
+                    return 7.5625f * newTime * newTime + .75f;
                 default:
                 {
                     if (time < 2.5 / 2.75)
                     {
-                        time -= 2.25f / 2.75f;
-                        return end * (7.5625f * time * time + .9375f) + start;
+                        var nTime = time - 2.25f / 2.75f;
+                        return 7.5625f * nTime * nTime + .9375f;
                     }
-                    time -= 2.625f / 2.75f;
-                    return end * (7.5625f * time * time + .984375f) + start;
+                    var xTime = time - 2.625f / 2.75f;
+                    return 7.5625f * xTime * xTime + .984375f;
                 }
             }
         }
 
-        public static float InOutBounce(float time) => InOutBounce(0f, 1f, time);
-        public static float InOutBounce(float start, float end, float value)
+        public static float InOutBounce(ref float time)
         {
-            end -= start;
-            if (value < 1f * 0.5f)
-                return InBounce(0, end, value * 2) * 0.5f + start;
-            return OutBounce(0, end, value * 2 - 1f) * 0.5f + end * 0.5f + start;
+            var target = time * 2f;
+            if (time < 0.5f)
+            {
+                return InBounce(ref target) * 0.5f;
+            }
+            target -= 1f;
+            return OutBounce(ref target) * 0.5f + 1f * 0.5f;
         }
         
         #endregion
