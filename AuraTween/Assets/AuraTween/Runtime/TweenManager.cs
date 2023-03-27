@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using AuraTween.Exceptions;
 using AuraTween.Internal;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Pool;
 
 namespace AuraTween
 {
+    [PublicAPI]
     [DefaultExecutionOrder(-5000)] // We want this to execute earlier. Our current design means if someone spawns a tween before .Start(), an exception will be thrown.
     public class TweenManager : MonoBehaviour
     {
@@ -26,7 +28,7 @@ namespace AuraTween
         {
             _activeContexts = new List<TweenContext>(_defaultTweenCapacity);
             _activeContextLookup = new Dictionary<long, TweenContext>(_defaultTweenCapacity);
-            _contextPool = new ObjectPool<TweenContext>(() => new TweenContext(), ClearContext, ClearContext, ClearContext, false, _defaultTweenCapacity);
+            _contextPool = new ObjectPool<TweenContext>(() => new TweenContext(), ClearContext, ClearContext, ClearContext, false, _defaultTweenCapacity, int.MaxValue);
             
             // Warm up the pool
             var contexts = new TweenContext[_defaultTweenCapacity];
@@ -41,6 +43,14 @@ namespace AuraTween
             _contextPool?.Dispose();
         }
         
+        /// <summary>
+        /// Sets the capacity of this <see cref="TweenManager"/>. This must be called before this component starts.
+        /// </summary>
+        /// <remarks>
+        /// If you're instantiating the <see cref="TweenManager"/> programatically and need to set the capacity, you can use .SetActive(false)
+        /// on the target <see cref="GameObject"/>, add the <see cref="TweenManager"/> to that <see cref="GameObject"/>, and then call <see cref="SetCapacity"/>.
+        /// </remarks>
+        /// <param name="size">The size of the default tween capacity.</param>
         public void SetCapacity(int size)
         {
             if (0 > size)
@@ -49,6 +59,12 @@ namespace AuraTween
             _defaultTweenCapacity = size;
         }
 
+        /// <summary>
+        /// Run a tween based on the provided options.
+        /// </summary>
+        /// <param name="options">The options of the tween.</param>
+        /// <returns></returns>
+        /// <exception cref="UninitializedTweenManagerException">Occurrs when this TweenManager has not been initialized. Make sure the component is active and enabled.</exception>
         public Tween Run(TweenOptions options)
         {
             if (_contextPool == null)

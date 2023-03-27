@@ -1,7 +1,9 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace AuraTween
 {
+    [PublicAPI]
     public ref struct TweenOptions
     {
         public float Duration;

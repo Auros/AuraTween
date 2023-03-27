@@ -1,5 +1,8 @@
-﻿namespace AuraTween
+﻿using JetBrains.Annotations;
+
+namespace AuraTween
 {
+    [PublicAPI]
     public enum Ease
     {
         Linear,

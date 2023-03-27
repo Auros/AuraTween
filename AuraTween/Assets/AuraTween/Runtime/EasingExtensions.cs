@@ -1,7 +1,9 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace AuraTween
 {
+    [PublicAPI]
     public static class EasingExtensions
     {
         public static EaseProcedure ToInterpolator(this Ease ease)
