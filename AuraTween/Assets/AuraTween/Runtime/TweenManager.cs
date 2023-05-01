@@ -176,15 +176,13 @@ namespace AuraTween
                 var lifetimeExpired = ctx.Lifetime != null && !ctx.Lifetime();
                 if (ctx.WantsToCancel || lifetimeExpired)
                 {
+                    // We only want to invoke the cancellation event if it was intended.
+                    if (!lifetimeExpired)
+                        ctx.OnCancel?.Invoke();
+                    
                     _activeContextLookup.Remove(ctx.Id);
                     _activeContexts.Remove(ctx);
                     _contextPool.Release(ctx);
-                    
-                    // We only want to invoke the cancellation event if it was intended.
-                    if (lifetimeExpired)
-                        continue;
-                    
-                    ctx.OnCancel?.Invoke();
                 }
                 
                 // Check if the tween has been completed.
