@@ -5,7 +5,7 @@
         "name": "Auros Nexus",
         "url": "https://auros.dev"
     },
-    "version": "1.0.3",
+    "version": "1.0.4",
     "unity": "2021.3",
     "description": "A lightweight, simple, and high performance tweening library for Unity.",
     "keywords": [ "tween", "tweening", "AuraTween" ],
