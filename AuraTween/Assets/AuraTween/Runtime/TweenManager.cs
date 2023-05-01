@@ -41,8 +41,10 @@ namespace AuraTween
             
             // Warm up the pool
             var contexts = new TweenContext[_defaultTweenCapacity];
+            
             for (int i = 0; i < contexts.Length; i++)
                 contexts[i] = _contextPool.Get();
+            
             foreach (var ctx in contexts)
                 _contextPool.Release(ctx);
         }
@@ -183,6 +185,7 @@ namespace AuraTween
                     _activeContextLookup.Remove(ctx.Id);
                     _activeContexts.Remove(ctx);
                     _contextPool.Release(ctx);
+                    continue;
                 }
                 
                 // Check if the tween has been completed.
