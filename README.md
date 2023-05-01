@@ -35,7 +35,10 @@ This allows you to build off the library and tune the functionality according to
 *Currently requires Unity 2021.3+, older Unity version support can be implemented on request.*
 
 ### OpenUPM
-*Coming soon*
+Install with [OpenUPM](https://openupm.com) (recommended)
+```
+openupm add dev.auros.auratween
+```
 
 ### Git URL
 ```
