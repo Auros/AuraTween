@@ -12,9 +12,18 @@ namespace AuraTween
     [DefaultExecutionOrder(-5000)] // We want this to execute earlier. Our current design means if someone spawns a tween before .Start(), an exception will be thrown.
     public class TweenManager : MonoBehaviour
     {
+        private enum TimeSource
+        {
+            DeltaTime,
+            UnscaledDeltaTime
+        }
+        
         [SerializeField]
         [Tooltip("This number of tweens are pre-allocated when the tween manager starts. This is only applied .Start() is called for this component, so make sure you set it before that point.")]
         private int _defaultTweenCapacity = 100;
+
+        [SerializeField]
+        private TimeSource _timeSource;
         
         // We store the contexts in both a list and dictionary.
         // The list is so we can loop over every active context without
@@ -153,7 +162,7 @@ namespace AuraTween
             if (_contextPool is null || _activeContexts is null || _activeContextLookup is null)
                 return;
             
-            var time = Time.deltaTime;
+            var time = _timeSource is TimeSource.DeltaTime ? Time.deltaTime : Time.unscaledDeltaTime;
             // Iterate over every active context in reverse order
             // so we can remove them if they become if they're invalid.
             for (int i = _activeContexts.Count - 1; i >= 0; i--)
