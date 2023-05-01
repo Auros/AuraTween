@@ -22,22 +22,24 @@ namespace AuraTween
             var myMaterial = _renderer.material;
 
             // float
-            _tweenManager.Run(-5f, 5f, _duration, value => Debug.Log($"float: ${value}"), Easer.OutCubic, this);
+            //_tweenManager.Run(-5f, 5f, _duration, value => Debug.Log($"float: ${value}"), Easer.OutCubic, this);
         
             // Vector3
-            var tween = _tweenManager.Run(Vector3.zero, new Vector3(0f, 5f, 0f), _duration, value => myTransform.localPosition = value, Easer.InOutExpo, this);
+            var tween = _tweenManager.Run(Vector3.zero, new Vector3(0f, 5f, 0f), _duration, value => myTransform.localPosition = value, Easer.Linear, this);
+            
+            tween.SetOnComplete(() => Debug.Log("yippee"));
     
             // Pause a tween
-            tween.Pause();
+            //tween.Pause();
     
             // Cancel a tween
-            tween.Cancel();
+            //tween.Cancel();
         
             // Custom types and or value calculation
-            _tweenManager.Run(Color.red, Color.cyan, _duration, value => myMaterial.color = value, Easer.OutElastic, HSV, this);
+            //_tweenManager.Run(Color.red, Color.cyan, _duration, value => myMaterial.color = value, Easer.OutElastic, HSV, this);
         
             // Custom easing methods
-            _tweenManager.Run(Quaternion.identity, Quaternion.Euler(new Vector3(0f, 90f, 0f)), _duration, value => myTransform.localRotation = value, CustomEaseWithAnimationCurve, this);
+            //_tweenManager.Run(Quaternion.identity, Quaternion.Euler(new Vector3(0f, 90f, 0f)), _duration, value => myTransform.localRotation = value, CustomEaseWithAnimationCurve, this);
         }
     
         private static Color HSV(ref Color start, ref Color end, ref float time)

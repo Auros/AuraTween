@@ -181,12 +181,13 @@ namespace AuraTween
                 // Check if the tween has been completed.
                 if (ctx.Progress >= ctx.Duration || ctx.Duration == 0)
                 {
+                    ctx.Updater?.Invoke(1f); // Force the updater to be "1" to re-evaluate its value in case we go over.
+                    ctx.OnComplete?.Invoke();
+                    
                     // Tween was completed. Remove from active, invoke necessary events, and cleanup.
                     _activeContextLookup.Remove(ctx.Id);
                     _activeContexts.Remove(ctx);
                     _contextPool.Release(ctx);
-                    ctx.Updater?.Invoke(1f); // Force the updater to be "1" to re-evaluate its value in case we go over.
-                    ctx.OnComplete?.Invoke();
                     continue;
                 }
 
