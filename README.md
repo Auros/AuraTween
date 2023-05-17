@@ -51,7 +51,7 @@ In your component, add a serialized field for `TweenManager` and assign it in th
 
 You can call `.Run(...)` on it. Six extension methods are available for the types `float`, `Vector2`, `Vector3`, `Quaternion`, `Pose`, and `Color`.
 There is also another extension method that allows a generic type.
-```cs
+```csharp
 public class MyBehaviour : MonoBehaviour
 {
     [SerializeField]
@@ -120,7 +120,7 @@ The `Easer` class contains procedure methods for all of the common easing functi
 To make it easier to serialize the different types of easings, there is an `Ease` enum with an extension method `.ToProcedure()`.
 
 
-```cs
+```csharp
 public class MyBehaviour : MonoBehaviour
 {
     [SerializeField]
@@ -140,7 +140,7 @@ public class MyBehaviour : MonoBehaviour
 
 If [UniTask](https://github.com/Cysharp/UniTask) is detected, you can await the tweens.
 
-```cs
+```csharp
 public class MyBehaviour : MonoBehaviour
 {
     [SerializeField]
