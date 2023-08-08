@@ -34,6 +34,7 @@ namespace AuraTween
                 Procedure = procedure,
                 Updater = time => updater(interpolator(ref start, ref end, ref time)),
                 Lifetime = owner ? () => owner : null,
+                Owner = owner
             };
             return tweenManager.Run(options);
         }
