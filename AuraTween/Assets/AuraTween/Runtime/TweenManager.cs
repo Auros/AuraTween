@@ -5,6 +5,7 @@ using AuraTween.Internal;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
 namespace AuraTween
 {
@@ -88,6 +89,7 @@ namespace AuraTween
             ctx.Duration = options.Duration;
             ctx.Lifetime = options.Lifetime;
             ctx.Procedure = options.Procedure;
+            ctx.Owner = options.Owner;
             AddContext(ctx);
             return handle;
         }
@@ -146,6 +148,16 @@ namespace AuraTween
                 return;
 
             ctx.OnComplete = complete;
+        }
+
+        public void CancelAll(Object target)
+        {
+            if (_activeContexts is null)
+                return;
+            
+            for (int i = 0; i < _activeContexts.Count; i++)
+                if (_activeContexts[i].Owner == target)
+                    _activeContexts[i].WantsToCancel = true;
         }
 
         private TweenContext? GetContext(Tween tween) => _activeContextLookup != null && _activeContextLookup.TryGetValue(tween.Id, out var ctx) ? ctx : null;

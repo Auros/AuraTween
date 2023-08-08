@@ -1,4 +1,5 @@
 ﻿using System;
+using Object = UnityEngine.Object;
 
 namespace AuraTween.Internal
 {
@@ -25,5 +26,7 @@ namespace AuraTween.Internal
         public Action<float>? Updater;
         
         public EaseProcedure? Procedure;
+
+        public Object? Owner;
     }
 }

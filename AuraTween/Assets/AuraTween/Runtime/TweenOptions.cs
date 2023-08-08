@@ -1,5 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace AuraTween
 {
@@ -10,5 +12,6 @@ namespace AuraTween
         public Func<bool>? Lifetime;
         public Action<float> Updater;
         public EaseProcedure Procedure;
+        public Object? Owner;
     }
 }

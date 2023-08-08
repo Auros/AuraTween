@@ -17,7 +17,7 @@ namespace AuraTween
         /// <summary>
         /// Is this tween alive? The tween can be alive even ifs been paused.
         /// </summary>
-        public bool IsAlive => _tweenManager.IsTweenActive(this);
+        public bool IsAlive => _tweenManager && _tweenManager.IsTweenActive(this);
 
         internal Tween(TweenManager tweenManager)
         {
@@ -65,7 +65,7 @@ namespace AuraTween
         /// <exception cref="MissingTweenManagerException">Occurrs if this tween is misconfigured or the TweenManager that created it has been destroyed.</exception>
         public void Cancel()
         {
-            ThrowIfInvalid();
+            ThrowIfInvalid(false);
             _tweenManager.CancelTween(this);
         }
 
@@ -91,12 +91,12 @@ namespace AuraTween
             _tweenManager.SetOnComplete(this, complete);
         }
 
-        private void ThrowIfInvalid()
+        private void ThrowIfInvalid(bool checkIfActive = true)
         {
             if (!_tweenManager)
                 throw new MissingTweenManagerException(this);
 
-            if (!_tweenManager.IsTweenActive(this))
+            if (checkIfActive && !_tweenManager.IsTweenActive(this))
                 throw new MissingTweenException(this);
         }
 
